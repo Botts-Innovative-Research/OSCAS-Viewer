@@ -31,3 +31,61 @@ div.video-stream canvas {
 #video-stream-container {
     height: calc(100% - 10px);
 }
+
+/*-----------RPM ENTRY ELEMENTS-----------*/
+
+div.rpm-entry {
+    height: 400px;
+}
+
+div.rpm-left {
+    flex-direction: column;
+    width:60%;
+    float:left;
+    height:100%;
+}
+
+div.rpm-right {
+    flex-direction: column;
+    width:40%;
+    float:left;
+    height:100%;
+}
+
+div.title {
+    text-align: center;
+    color:darkslateblue;
+    font-family: sans-serif;
+}
+
+div.gamma-chart-window {
+    width:100%;
+    overflow: hidden;
+    height: 40%;
+}
+
+div.neutron-chart-window {
+    width: 100%;
+    overflow: hidden;
+    height: 40%;
+}
+
+div.video-window {
+    width: auto;
+    /* padding: 8px; */
+    /* border: 1px solid #dee2e6; */
+    overflow: hidden;
+    /* height:calc(50% - 40px); */
+    /*height:30%;*/
+    margin: 20px;
+}
+
+div.video-window canvas {
+    width: 100%;
+}
+
+div.video-window img {
+    width: 100%;
+}
+
+
