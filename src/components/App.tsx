@@ -19,6 +19,7 @@ import React, {useEffect, useState} from "react";
 import {appStore} from "../state/Store";
 
 import CesiumMap from "./map/CesiumMap";
+import RpmEntry from "./oscas/RpmEntry"
 import Settings from "./settings/Settings";
 import ContextMenu from "./menus/ContextMenu";
 import {
@@ -50,6 +51,8 @@ import SplashScreen from "./splash/SplashScreen";
 import TimeController from "./time/TimeController";
 import StreamingDialog from "./dialogs/StreamingDialog";
 import {ObservableType} from "../data/Constants";
+//@ts-ignore
+import {Mode} from "osh-js/source/core/datasource/Mode";
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -89,7 +92,7 @@ const App = () => {
 
                         await fetchControls(sensorHubServer, true, system).then();
 
-                        await fetchSubsystems(sensorHubServer, true, system).then(async physicalSystems =>{
+                        await fetchSubsystems(sensorHubServer, true, system).then(async physicalSystems => {
 
                             for (let system of physicalSystems) {
 
@@ -159,40 +162,83 @@ const App = () => {
         }, 5000)
     }
 
+    let server = "localhost:8282/sensorhub/sos";
+    let fullStart = "2023-10-31T18:20:18Z";
+    let fullEnd = "2023-10-31T18:23:12Z";
+
+    let testStart = "2023-11-01T15:03:13.515Z";
+    let testEnd = "2023-11-01T15:08:14.515Z";
+
+// Full Database
+    let start = fullStart;
+    let end = fullEnd;
+    let offeringId = "urn:osh:sensor:rapiscanrpm0001";
+    let videoOfferingID = "urn:android:device:3260a03a280be236";
+    let gammaProperty = "http://www.opengis.net/def/gamma-scan";
+    let neutronProperty = "http://www.opengis.net/def/neutron-scan";
+    let videoProperty = "http://sensorml.com/ont/swe/property/VideoFrame";
+    let mode = Mode.REPLAY;
+
+    document.body.style.overflow = "scroll";
+
+    let rpmEntryProps:any = {
+        datasource: {
+            url: server,
+            mode: mode,
+            start: fullStart,
+            end: fullEnd,
+            rpm: {
+                id: offeringId,
+                gammaProp: gammaProperty,
+                neutronProp: neutronProperty
+            },
+            video: {
+                id: videoOfferingID,
+                property: videoProperty
+
+            }
+        },
+        name: "Rapiscan"
+    }
+
     return (
-        <div>
-            <ContextMenu/>
+        <div id={"container"}>
+            {/*<ContextMenu/>*/}
 
-            {showServerManagementDialog ? <ServerManagement title={"Servers"}/> : null}
-            {showSettingsDialog ? <Settings title={"Settings"}/> : null}
-            {showAddServerDialog ? <AddServer title={"Configure New Server"}/> : null}
-            {showObservablesDialog ? <Observables title={"Observables"}/> : null}
-            {showSystemsDialog ? <Systems title={"Systems"}/> : null}
+            {/*{showServerManagementDialog ? <ServerManagement title={"Servers"}/> : null}*/}
+            {/*{showSettingsDialog ? <Settings title={"Settings"}/> : null}*/}
+            {/*{showAddServerDialog ? <AddServer title={"Configure New Server"}/> : null}*/}
+            {/*{showObservablesDialog ? <Observables title={"Observables"}/> : null}*/}
+            {/*{showSystemsDialog ? <Systems title={"Systems"}/> : null}*/}
 
-            {showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}
+            {/*{showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}*/}
 
             <CesiumMap/>
-            <TimeController/>
+            <RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 1"}/>
+            <RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 2"}/>
+            <RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 3"}/>
 
-            {videoDialogs.length > 0 ? videoDialogs : null}
+            {/*{videoDialogs.length > 0 ? videoDialogs : null}*/}
 
-            {showConfirmation ?
-                <CenteredPopover anchorEl={document.getElementById('root')}>
-                    <Alert severity="success">
-                        <AlertTitle>Initialization Complete!</AlertTitle>
-                    </Alert>
-                </CenteredPopover>
-                : null
-            }
+            {/*{showConfirmation ?*/}
+            {/*    <CenteredPopover anchorEl={document.getElementById('root')}>*/}
+            {/*        <Alert severity="success">*/}
+            {/*            <AlertTitle>Initialization Complete!</AlertTitle>*/}
+            {/*        </Alert>*/}
+            {/*    </CenteredPopover>*/}
+            {/*    : null*/}
+            {/*}*/}
 
-            {showError ?
-                <CenteredPopover anchorEl={document.getElementById('root')}>
-                    <Alert severity="warning">
-                        <AlertTitle>{errorMsg} : Invalid Server Configuration or Server Not Responding</AlertTitle>
-                    </Alert>
-                </CenteredPopover>
-                : null
-            }
+
+            {/*{showError ?*/}
+            {/*    <CenteredPopover anchorEl={document.getElementById('root')}>*/}
+            {/*        <Alert severity="warning">*/}
+            {/*            <AlertTitle>{errorMsg} : Invalid Server Configuration or Server Not Responding</AlertTitle>*/}
+            {/*        </Alert>*/}
+            {/*    </CenteredPopover>*/}
+            {/*    : null*/}
+            {/*}*/}
+
         </div>
     );
 };
