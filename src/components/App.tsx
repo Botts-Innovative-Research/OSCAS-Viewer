@@ -20,6 +20,7 @@ import {appStore} from "../state/Store";
 
 import CesiumMap from "./map/CesiumMap";
 import RpmEntry from "./oscas/RpmEntry"
+import RpmStatus from "./oscas/RpmStatus";
 import Settings from "./settings/Settings";
 import ContextMenu from "./menus/ContextMenu";
 import {
@@ -214,9 +215,23 @@ const App = () => {
             {/*{showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}*/}
 
             <CesiumMap/>
-            <RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 1"}/>
-            <RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 2"}/>
-            <RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 3"}/>
+            {/*<RpmEntry datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 1"}/>*/}
+            <div className={'grid'}>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 1"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 2"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 3"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+                <RpmStatus datasource={rpmEntryProps.datasource} name={"Rapiscan Portal 4"}/>
+
+
+            </div>
+
 
             {/*{videoDialogs.length > 0 ? videoDialogs : null}*/}
 
