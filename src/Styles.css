@@ -67,12 +67,25 @@ div.neutron-chart-window {
 
 div.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     grid-template-rows: auto;
     /*grid-template-rows: 1;*/
-    gap: 1rem;
+    gap: 5px;
     margin-left: 1rem;
     margin-right: 1rem;
+}
+
+#StatusGrid {
+    width:50%;
+    border-bottom-color: darkgrey;
+}
+
+.MuiCard-root{
+    display: flex;
+    flex-direction: column;
+}
+.MuiCardActions-root{
+    margin-top: auto;
 }
 
 /*-----------RPM ENTRY ELEMENTS-----------*/

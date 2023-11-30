@@ -48,20 +48,16 @@ const RpmStatus = (props: IRpmEntryProps)=> {
 
 
     return (
-        <Card sx={{ width: 275 }}>
+        <Card sx={{ width: 150, height:100}}>
             <CardContent>
-                <Typography variant="h5" component="div">
+                <div style={{display: 'flex', alignItems: 'right', flexWrap: 'wrap',}}>
+                <Typography sx={{fontSize:14, fontWeight:'bold'}} component="div">
                     {props.name}
                 </Typography>
-                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',}}>
-                <CircleNotifications color="success"/><Typography sx={{ fontSize: 16 }}>GAMMA</Typography>
-                </div>
-                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',}}>
-                <Circle color="success"/><Typography sx={{ fontSize: 16}}>NEUTRON</Typography>
                 </div>
             </CardContent>
             <CardActions>
-                <Button size="small">View RPM</Button>
+                <Circle color="success"/><Button size="small">View RPM</Button>
             </CardActions>
         </Card>
     )
