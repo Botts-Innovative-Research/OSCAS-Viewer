@@ -265,16 +265,20 @@ const App = () => {
 
             {/*{showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}*/}
 
-            <CesiumMap/>
+            <div id={"overview-section"}>
+                <div className={'grid'} id={"ov-left"}>
+                    <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
+                    <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
+                    <RpmStatus datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
+                </div>
+                <div id={"ov-right"}>
+                    <CesiumMap/>
+                </div>
+            </div>
             <RpmEntry datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
             <RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
             <RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
-            <div className={'grid'}>
-                <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
-                <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
-                <RpmStatus datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
 
-            </div>
 
 
             {/*{videoDialogs.length > 0 ? videoDialogs : null}*/}
