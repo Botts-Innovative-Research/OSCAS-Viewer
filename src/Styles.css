@@ -13,29 +13,106 @@
  *
  */
 
+/*body {*/
+/*    height: 100vh*/
+/*}*/
 body {
-    height: 100vh
+    overflow: scroll;
+}
+
+#container {
+    /* height: calc(100% - 15px); */
+    height: 100%;
+    /*overflow: hidden;*/
+    background-color: white;
+    margin: 5%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
 div.video-stream {
-    width: 99%;
-    height: 99%;
+    width: 300px;
+    /*height: 99%;*/
     /*border: 1px solid #dee2e6;*/
     resize: none;
-    overflow: hidden;
+    /*overflow: hidden;*/
     margin: auto;
 }
 div.video-stream canvas {
-    width: 100%;
+    width: 300px;
 }
 #video-stream-container {
-    height: calc(100% - 10px);
+    /*height: calc(100% - 10px);*/
+}
+
+div.gamma-chart-window {
+    width:100%;
+    /*overflow: hidden;*/
+    height: 50%;
+}
+
+div.neutron-chart-window {
+    width: 100%;
+    /*overflow: hidden;*/
+    height: 50%;
+}
+
+#CesiumMap{
+    height: 500px;
+    padding: 10px;
+    max-width: 1375px;
+    margin: 10px;
+}
+
+div.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-rows: auto;
+    /*grid-template-rows: 1;*/
+    gap: 5px;
+    margin: 10px;
+    padding: 10px;
+}
+
+#ov-left{
+    flex-direction: column;
+    /* width:calc(75% - 50px); */
+    width:10%;
+    min-width: 165px;
+    float:left;
+}
+
+#ov-right{
+    flex-direction: column;
+    /* width:calc(75% - 50px); */
+    width:75%;
+    max-width: 1200px;
+    float:left;
+}
+#StatusGrid {
+    width:50%;
+    border-bottom-color: darkgrey;
+}
+
+.MuiCard-root{
+    display: flex;
+    flex-direction: column;
+}
+.MuiCardActions-root{
+    margin-top: auto;
 }
 
 /*-----------RPM ENTRY ELEMENTS-----------*/
 
 div.rpm-entry {
-    height: 400px;
+    height: 500px;
+    padding: 10px;
+    background-color: oldlace;
+    border: darkgrey;
+    border-radius: 10px;
+    max-width: 1375px;
+    margin: 10px;
 }
 
 div.rpm-left {
@@ -58,6 +135,12 @@ div.title {
     font-family: sans-serif;
 }
 
+h2.title{
+    font-family: sans-serif;
+    color: black;
+    text-transform: uppercase;
+}
+
 div.gamma-chart-window {
     width:100%;
     overflow: hidden;
@@ -66,15 +149,15 @@ div.gamma-chart-window {
 
 div.neutron-chart-window {
     width: 100%;
-    overflow: hidden;
+    /*overflow: hidden;*/
     height: 40%;
 }
 
 div.video-window {
-    width: auto;
+    /*width: auto;*/
     /* padding: 8px; */
     /* border: 1px solid #dee2e6; */
-    overflow: hidden;
+    /*overflow: hidden;*/
     /* height:calc(50% - 40px); */
     /*height:30%;*/
     margin: 20px;
@@ -82,10 +165,14 @@ div.video-window {
 
 div.video-window canvas {
     width: 100%;
+    max-width: 500px;
+    max-height: 375px;
 }
 
 div.video-window img {
     width: 100%;
+    max-height: 375px;
+    max-width: 500px;
 }
 
 

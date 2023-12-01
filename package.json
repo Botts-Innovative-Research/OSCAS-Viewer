@@ -44,6 +44,8 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "cesium": "1.99",
+    "chart.js": "^4.4.0",
+    "chartjs-adapter-moment": "^1.0.1",
     "file-loader": "^6.2.0",
     "html-plugin": "^0.1.0",
     "html-webpack-tags-plugin": "^3.0.2",
