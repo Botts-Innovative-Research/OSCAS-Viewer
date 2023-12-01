@@ -1,10 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 //@ts-ignore
 import SosGetResult from "osh-js/source/core/datasource/sos/SosGetResult.datasource"
-import {Card, CardActions, CardContent, Typography, Button} from "@mui/material";
+import {Card, CardActions, CardHeader, CardContent, Typography, Button} from "@mui/material";
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import CircleNotifications from '@mui/icons-material/CircleNotifications'
 import Circle from '@mui/icons-material/Circle'
+//@ts-ignore
+import {EventType} from 'osh-js/source/core/event/EventType';
+//@ts-ignore
+import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer"
+
 
 interface IRpmEntryProps {
     name: string;
@@ -17,8 +22,8 @@ const RpmStatus = (props: IRpmEntryProps)=> {
 
     let datasources: SosGetResult = [];
 
-    let [gammaStatus, setGammaStatus] = useState<string>("");
-    let [neutronStatus, setNeutronStatus] = useState<string>("");
+    let [gammaStatus, setGammaStatus] = useState<ReactElement>(<Circle color="success"/>);
+    let [textStatus, settextStatus] = useState<string>("");
 
     useEffect(() => {
 
@@ -44,20 +49,41 @@ const RpmStatus = (props: IRpmEntryProps)=> {
         datasources.push(rpmNeutronDataSource);
 
 
+
+        let gStatus: string = "";
+        // @ts-ignore
+        rpmGammaDataSource.subscribe((message: any[]) => {
+            // @ts-ignore
+            let thisStatus:string = message.values[0].data["Alarm State"];
+            settextStatus(thisStatus);
+            if (thisStatus == "Alarm"){
+                setGammaStatus(<CircleNotifications style={{ color: '#ff0000' }}/>)
+            }
+            else {
+                setGammaStatus(<Circle color="success"/>)
+            }
+        }, [EventType.DATA]);
+
+
+        let TimeController = new DataSynchronizer({
+            replaySpeed: 1,
+            intervalRate: 5,
+            dataSources: datasources,
+            startTime: props.datasource.start,
+        });
+
+
+        TimeController.connect();
+
+
     }, []);
 
 
     return (
-        <Card sx={{ width: 150, height:100}}>
-            <CardContent>
-                <div style={{display: 'flex', alignItems: 'right', flexWrap: 'wrap',}}>
-                <Typography sx={{fontSize:14, fontWeight:'bold'}} component="div">
-                    {props.name}
-                </Typography>
-                </div>
-            </CardContent>
+        <Card sx={{ width: 150, height:150}}>
+            <CardHeader title={props.name} subheader={textStatus}></CardHeader>
             <CardActions>
-                <Circle color="success"/><Button size="small">View RPM</Button>
+                {gammaStatus}<Button size="small">View RPM</Button>
             </CardActions>
         </Card>
     )
