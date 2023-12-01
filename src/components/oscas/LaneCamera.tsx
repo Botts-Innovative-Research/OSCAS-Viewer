@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Divider, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Paper} from "@mui/material";
+import {Card, CardActions, CardContent, Typography, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem,
+MenuList, Paper} from "@mui/material";
 
 // @ts-ignore
 import VideoView from "osh-js/source/core/ui/view/video/VideoView";
@@ -26,6 +27,7 @@ const LaneCamera = (props: ILaneCameraProps)=> {
 
     let datasources: SosGetResult=[];
 
+    let [masterTimeController, setMasterTimeController] = useState<DataSynchronizer>({});
 
     let [vID, setVID] = useState<string>("");
 
@@ -64,7 +66,6 @@ const LaneCamera = (props: ILaneCameraProps)=> {
             getTimestamp: (rec: { timestamp: any; }) => rec.timestamp,
         });
 
-
         let laneCamVideoView = new VideoView({
             container: videoID,
             css: 'video-h264',
@@ -81,27 +82,18 @@ const LaneCamera = (props: ILaneCameraProps)=> {
             startTime: props.datasource.start,
         });
 
+        setMasterTimeController(TimeController);
 
         TimeController.connect();
     },[])
 
 
     return(
-        <Card>
-             <h2 className={"title"}>{props.name}</h2>
-
-           {/*}	<div className="Heading">...</div>
-           	<Grid>
-           		<Card content={dummyData} />
-           		<Card content={dummyData} />
-           		<Card content={dummyData} />
-           	</Grid>; */}
-
-               <div className={"video-window"} id={vID}/>
-
-
-        </Card>
-    )
+      <div className={"rpm-entry"}>
+                  <h2 className={"title"}>{props.name}</h2>
+                      <div className={"video-window"} id={vID}/>
+              </div>
+          )
 }
 
 export default LaneCamera;
