@@ -54,6 +54,7 @@ import StreamingDialog from "./dialogs/StreamingDialog";
 import {ObservableType} from "../data/Constants";
 //@ts-ignore
 import {Mode} from "osh-js/source/core/datasource/Mode";
+import OccupancyTable from "./oscas/OccupancyTable";
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -278,6 +279,7 @@ const App = () => {
             <RpmEntry datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
             <RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
             <RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
+            <OccupancyTable name={rpm1EntryProps.name} datasource={rpm1EntryProps.datasource}/>
 
 
 
