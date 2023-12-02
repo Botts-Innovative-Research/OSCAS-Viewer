@@ -65,6 +65,44 @@ div.neutron-chart-window {
     margin: 10px;
 }
 
+div.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-rows: auto;
+    /*grid-template-rows: 1;*/
+    gap: 5px;
+    margin: 10px;
+    padding: 10px;
+}
+
+#ov-left{
+    flex-direction: column;
+    /* width:calc(75% - 50px); */
+    width:10%;
+    min-width: 165px;
+    float:left;
+}
+
+#ov-right{
+    flex-direction: column;
+    /* width:calc(75% - 50px); */
+    width:75%;
+    max-width: 1200px;
+    float:left;
+}
+#StatusGrid {
+    width:50%;
+    border-bottom-color: darkgrey;
+}
+
+.MuiCard-root{
+    display: flex;
+    flex-direction: column;
+}
+.MuiCardActions-root{
+    margin-top: auto;
+}
+
 /*-----------RPM ENTRY ELEMENTS-----------*/
 
 div.rpm-entry {

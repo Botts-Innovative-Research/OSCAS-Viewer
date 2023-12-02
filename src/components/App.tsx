@@ -21,10 +21,9 @@ import {appStore} from "../state/Store";
 import CesiumMap from "./map/CesiumMap";
 import RpmEntry from "./oscas/RpmEntry"
 import LaneCamera from "./oscas/LaneCamera";
-//LaneCameraCard
-import Card from "./components/card/Card";
-import Grid from "./components/card/Grid";
 
+
+import RpmStatus from "./oscas/RpmStatus";
 import Settings from "./settings/Settings";
 import ContextMenu from "./menus/ContextMenu";
 import {
@@ -168,8 +167,8 @@ const App = () => {
     }
 
     let server = "localhost:8282/sensorhub/sos";
-    let fullStart = "2023-10-31T18:20:18Z";
-    let fullEnd = "2023-10-31T18:23:12Z";
+    let fullStart = "2023-11-30T16:00:46.867Z";
+    let fullEnd = "2023-11-30T16:01:10Z";
 
     let testStart = "2023-11-01T15:03:13.515Z";
     let testEnd = "2023-11-01T15:08:14.515Z";
@@ -193,6 +192,7 @@ const App = () => {
 
 
        document.body.style.overflow = "scroll";
+
 
        let rpm1EntryProps:any = {
            datasource: {
@@ -263,8 +263,8 @@ const App = () => {
                 video: {
                     id: videoOfferingID,
                     property: videoProperty
-                }
-            },
+                    }
+                },
             name: "Portal Lane 1 Camera"
          }
 
@@ -296,26 +296,59 @@ const App = () => {
             name: "Portal Lane 3 Camera"
         }
 
+ return (
+        <div id={"container"}>
+            {/*<ContextMenu/>*/}
 
-         return (
-             <div id={"container"}>
+            {/*{showServerManagementDialog ? <ServerManagement title={"Servers"}/> : null}*/}
+            {/*{showSettingsDialog ? <Settings title={"Settings"}/> : null}*/}
+            {/*{showAddServerDialog ? <AddServer title={"Configure New Server"}/> : null}*/}
+            {/*{showObservablesDialog ? <Observables title={"Observables"}/> : null}*/}
+            {/*{showSystemsDialog ? <Systems title={"Systems"}/> : null}*/}
 
-               <CesiumMap/>
-                 <RpmEntry datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
-                 <RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
-                 <RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
+            {/*{showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}*/}
 
-
-
-                 <div className={'grid'}>
-                 <LaneCamera datasource={portalLane1CameraProps} name={portalLane1CameraProps.name}/>
-                 <LaneCamera datasource={portalLane2CameraProps} name={portalLane2CameraProps.name}/>
-                 <LaneCamera datasource={portalLane3CameraProps} name={portalLane3CameraProps.name}/>
-                 </div>
-
+            <div id={"overview-section"}>
+                <div className={'grid'} id={"ov-left"}>
+                    <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
+                    <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
+                    <RpmStatus datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
+                </div>
+                <div id={"ov-right"}>
+                    <CesiumMap/>
+                </div>
             </div>
+            <RpmEntry datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
+            <RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
+            <RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
 
+            {/*{videoDialogs.length > 0 ? videoDialogs : null}*/}
+
+            {/*{showConfirmation ?*/}
+            {/*    <CenteredPopover anchorEl={document.getElementById('root')}>*/}
+            {/*        <Alert severity="success">*/}
+            {/*            <AlertTitle>Initialization Complete!</AlertTitle>*/}
+            {/*        </Alert>*/}
+            {/*    </CenteredPopover>*/}
+            {/*    : null*/}
+            {/*}*/}
+
+
+            {/*{showError ?*/}
+            {/*    <CenteredPopover anchorEl={document.getElementById('root')}>*/}
+            {/*        <Alert severity="warning">*/}
+            {/*            <AlertTitle>{errorMsg} : Invalid Server Configuration or Server Not Responding</AlertTitle>*/}
+            {/*        </Alert>*/}
+            {/*    </CenteredPopover>*/}
+            {/*    : null*/}
+            {/*}*/}
+
+        </div>
     );
 };
 
 export default App;
+
+
+
+
