@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Card, CardActions, CardContent, Typography, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem,
-MenuList, Paper} from "@mui/material";
+import {Box, Card, CardActions, CardHeader, CardContent, Grid} from "@mui/material";
+import styled from '@mui/system/styled';
 
 // @ts-ignore
 import VideoView from "osh-js/source/core/ui/view/video/VideoView";
@@ -16,7 +16,10 @@ import ChartJSView from "osh-js/source/core/ui/view/chart/ChartJSView";
 import VideoDataLayer from "osh-js/source/core/ui/layer/VideoDataLayer"
 //@ts-ignore
 import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer"
+import {EventType} from 'osh-js/source/core/event/EventType';
+
 import CesiumMap from "../map/CesiumMap";
+
 
 interface ILaneCameraProps {
      name: string;
@@ -30,6 +33,10 @@ const LaneCamera = (props: ILaneCameraProps)=> {
     let [masterTimeController, setMasterTimeController] = useState<DataSynchronizer>({});
 
     let [vID, setVID] = useState<string>("");
+
+    let [gammaStatus, setGammaStatus] = useState<string>("");
+    let [textStatus, setTextStatus] = useState<string>("");
+
 
     function guidGenerator() {
         var S4 = function() {
@@ -46,6 +53,32 @@ const LaneCamera = (props: ILaneCameraProps)=> {
         let randomID = guidGenerator();
         let videoID = "video" + randomID;
         setVID(videoID);
+
+        let rpmGammaDataSource: SosGetResult = new SosGetResult("Gamma DS", {
+            endpointUrl: props.datasource.url,
+            offeringID: props.datasource.rpm.id,
+            observedProperty: props.datasource.rpm.gammaProp,
+            startTime: props.datasource.start,
+            endTime: props.datasource.end,
+            mode: props.datasource.mode
+        })
+
+        datasources.push(rpmGammaDataSource);
+
+            let gStatus: string = "";
+
+            rpmGammaDataSource.subscribe((message: any[]) => {
+
+                let thisStatus:string = message.values[0].data["Alarm State"];
+                setTextStatus(thisStatus);
+                if (thisStatus == "Alarm"){
+                    setGammaStatus("MuiPaper-outlined")
+                }
+            else {
+                   setGammaStatus("")
+                }
+            }, [EventType.DATA]);
+
 
         // Lane Video
         let laneCamVideoDataSource: SosGetResult = new SosGetResult("Lane Camera DS", {
@@ -75,6 +108,7 @@ const LaneCamera = (props: ILaneCameraProps)=> {
             layers: [laneCamVideoLayer]
         });
 
+
    let TimeController = new DataSynchronizer({
             replaySpeed: 1,
             intervalRate: 5,
@@ -87,13 +121,14 @@ const LaneCamera = (props: ILaneCameraProps)=> {
         TimeController.connect();
     },[])
 
-
-    return(
-      <div className={"rpm-entry"}>
-                  <h2 className={"title"}>{props.name}</h2>
-                      <div className={"video-window"} id={vID}/>
-              </div>
-          )
-}
+      return (
+                <Card className={gammaStatus} id="lane-camera-card">
+                    <CardHeader title={props.name}> </CardHeader>
+                    <CardContent>
+                        <div className="lane-cam-video-window" id={vID}/>
+                    </CardContent>
+                </Card>
+      )
+};
 
 export default LaneCamera;

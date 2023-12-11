@@ -13,7 +13,7 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, ReactElement} from "react";
 
 // @ts-ignore
 import {appStore} from "../state/Store";
@@ -21,6 +21,8 @@ import {appStore} from "../state/Store";
 import CesiumMap from "./map/CesiumMap";
 import RpmEntry from "./oscas/RpmEntry"
 import LaneCamera from "./oscas/LaneCamera";
+import LaneCameraDisplay from "./oscas/LaneCameraDisplay";
+import PaginationSetter from "./oscas/Pagination";
 
 
 import RpmStatus from "./oscas/RpmStatus";
@@ -57,6 +59,10 @@ import StreamingDialog from "./dialogs/StreamingDialog";
 import {ObservableType} from "../data/Constants";
 //@ts-ignore
 import {Mode} from "osh-js/source/core/datasource/Mode";
+import { Pagination } from "@mui/material";
+
+// const [currentPage, setCurrentPage] = useState(1);
+// const [cardsPerPage] = useState(6);
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -77,6 +83,7 @@ const App = () => {
     let [showConfirmation, setShowConfirmation] = useState<boolean>(false);
     let [showError, setShowError] = useState<boolean>(false);
     let [errorMsg, setErrorMsg] = useState<string>(null);
+
 
     useEffect(() => {
 
@@ -156,6 +163,8 @@ const App = () => {
         videoDialogs.push(<StreamingDialog key={observable.uuid} observable={observable}/>);
     })
 
+
+
     const popupError = (msg: string) => {
 
         setErrorMsg(msg);
@@ -164,7 +173,7 @@ const App = () => {
             setErrorMsg(null);
             setShowError(false);
         }, 5000)
-    }
+    };
 
     let server = "localhost:8282/sensorhub/sos";
     let fullStart = "2023-11-30T16:00:46.867Z";
@@ -254,47 +263,17 @@ const App = () => {
            name: "Lane 3"
        }
 
-       let portalLane1CameraProps:any = {
-            datasource: {
-                url: server,
-                mode: mode,
-                start: p1Start,
-                end: p1End,
-                video: {
-                    id: videoOfferingID,
-                    property: videoProperty
-                    }
-                },
-            name: "Portal Lane 1 Camera"
-         }
 
-       let portalLane2CameraProps:any = {
-            datasource: {
-                url: server,
-                mode: mode,
-                start: p2Start,
-                end: p2End,
-                video: {
-                    id: videoOfferingID,
-                    property: videoProperty
-                }
-            },
-            name: " Portal Lane 2 Camera"
-         }
 
-       let portalLane3CameraProps:any = {
-            datasource: {
-                url: server,
-                mode: mode,
-                start: p3Start,
-                end: p3End,
-                video: {
-                    id: videoOfferingID,
-                    property: videoProperty
-                }
-            },
-            name: "Portal Lane 3 Camera"
-        }
+  let rpmStatuses:ReactElement[] = [
+    <LaneCamera datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>,
+    <LaneCamera datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>,
+    <LaneCamera datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>,
+    <LaneCamera datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>,
+    <LaneCamera datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>,
+    <LaneCamera datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
+    ];
+
 
  return (
         <div id={"container"}>
@@ -308,7 +287,12 @@ const App = () => {
 
             {/*{showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}*/}
 
-            <div id={"overview-section"}>
+
+         <div className={'display-card'}>
+                   <LaneCameraDisplay contents={rpmStatuses} />
+                   </div>
+
+           * <div id={"overview-section"}>
                 <div className={'grid'} id={"ov-left"}>
                     <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
                     <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
