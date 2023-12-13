@@ -5,19 +5,39 @@ import { Pagination } from "@mui/material";
 
 
 interface ILaneCameraDisplayProps {
-     contents: ReactElement[];
-}
+    cards: ReactElement[];
+    }
 
-const LaneCameraDisplay = (props: ILaneCameraDisplayProps)=> {
+const LaneCameraDisplay = (props: ILaneCameraDisplayProps) => {
 
-    let contents = props.contents;
+    let cards = props.cards;
+
+    return (
+        <div className="lane-camera-grid"> {cards.map(card => (
+        <div id="lane-camera-card">
+            {card}
+         </div>))}
+        </div>
+    )};
+
+      export default LaneCameraDisplay;
 
 
-  return (
-    <div className="lane-camera-grid">
-          {contents}
-    </div>
-  );
-};
+// };
+// interface ILaneCameraDisplayProps {
+//      contents: ReactElement[];
+// }
+//
+// const LaneCameraDisplay = (props: ILaneCameraDisplayProps)=> {
+//
+//     let contents = props.contents;
+//
+//
+//   return (
+//     <div className="lane-camera-grid">
+//           {contents}
+//     </div>
+//   );
+// };
 
-  export default LaneCameraDisplay;
+//   export default LaneCameraDisplay;

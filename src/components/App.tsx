@@ -60,6 +60,10 @@ import {ObservableType} from "../data/Constants";
 //@ts-ignore
 import {Mode} from "osh-js/source/core/datasource/Mode";
 import { Pagination } from "@mui/material";
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // const [currentPage, setCurrentPage] = useState(1);
 // const [cardsPerPage] = useState(6);
@@ -83,6 +87,10 @@ const App = () => {
     let [showConfirmation, setShowConfirmation] = useState<boolean>(false);
     let [showError, setShowError] = useState<boolean>(false);
     let [errorMsg, setErrorMsg] = useState<string>(null);
+
+    const [cards, setCards]= useState<ReactElement>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [cardsPerPage] = useState(6);
 
 
     useEffect(() => {
@@ -264,16 +272,35 @@ const App = () => {
        }
 
 
+useEffect(() => {
+    const getCards = () => {
+        setCards(rpmStatuses)
+    }
+
+    getCards();
+},[currentPage]);
+
 
   let rpmStatuses:ReactElement[] = [
-    <LaneCamera datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>,
-    <LaneCamera datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>,
-    <LaneCamera datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>,
-    <LaneCamera datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>,
-    <LaneCamera datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>,
-    <LaneCamera datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
+    <LaneCamera datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name} id={1}/>,
+    <LaneCamera datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name} id={2}/>,
+    <LaneCamera datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name} id={3}/>,
+    <LaneCamera datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name} id={4}/>,
+    <LaneCamera datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name} id={5}/>,
+    <LaneCamera datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name} id={6}/>
     ];
 
+//Get current cards
+const indexOfLastCard = currentPage * cardsPerPage;
+const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+const currentCards = cards.slice(indexOfFirstCard, indexOfLastCard);
+
+// Change page
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+const handleChange = (event, value) => {
+   setCurrentPage(value);
+};
 
  return (
         <div id={"container"}>
@@ -289,10 +316,21 @@ const App = () => {
 
 
          <div className={'display-card'}>
-                   <LaneCameraDisplay contents={rpmStatuses} />
-                   </div>
 
-           * <div id={"overview-section"}>
+                   <LaneCameraDisplay cards={currentCards} />
+
+                   <Pagination className={'pagination-bar'} count={4} page={currentPage}
+                   onChange={handleChange}
+                     renderItem={(item) => (
+                        <PaginationItem size={'large'}
+                          slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                          {...item}
+                        />
+                      )}
+                    />
+                </div>
+
+           {/* <div id={"overview-section"}>
                 <div className={'grid'} id={"ov-left"}>
                     <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
                     <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
@@ -306,6 +344,8 @@ const App = () => {
             <RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
             <RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
 
+
+*/}
             {/*{videoDialogs.length > 0 ? videoDialogs : null}*/}
 
             {/*{showConfirmation ?*/}

@@ -190,6 +190,13 @@ div.MuiCardHeader-root {
     background-color: lightblue;
 }
 
+div.MuiCardContent-root{
+    font-size: 1rem;
+    padding: 0;
+}
+
+
+
 .css-46bh2p-MuiCardContent-root:last-child {
     padding: 0;
 }
@@ -218,8 +225,8 @@ div.lane-cam-video-window img {
 
 
 div.lane-camera-grid {
-    height: 800px;
-    width: 1200px;
+    height: 300px;
+    width: 600px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: min-content;
@@ -234,4 +241,8 @@ div.lane-camera-grid {
 
 .pagination-bar {
     text-align: center;
+}
+
+button.MuiPaginationItem-page {
+    display: none;
 }
