@@ -26,9 +26,9 @@ body {
     /*overflow: hidden;*/
     background-color: white;
     margin: 5%;
-    display: flex;
+    /*display: flex;*/
     justify-content: center;
-    flex-direction: column;
+    /*flex-direction: column;*/
 }
 
 div.video-stream {
@@ -59,9 +59,9 @@ div.neutron-chart-window {
 }
 
 #CesiumMap{
-    height: 500px;
+    height: 600px;
     padding: 10px;
-    max-width: 1375px;
+    max-width: 1500px;
     margin: 10px;
 }
 
@@ -75,8 +75,23 @@ div.grid {
     padding: 10px;
 }
 
+.Alarm {
+    background-color: lightcoral;
+}
+
+.GAMMA {
+    background-color: crimson;
+}
+
+.NEUTRON {
+    background-color: fuchsia;
+}
+.GAMMA-NEUTRON {
+    background-color: #8600ff
+}
+
 #ov-left{
-    flex-direction: column;
+    /*flex-direction: column;*/
     /* width:calc(75% - 50px); */
     width:10%;
     min-width: 165px;
@@ -84,10 +99,10 @@ div.grid {
 }
 
 #ov-right{
-    flex-direction: column;
+    /*flex-direction: column;*/
     /* width:calc(75% - 50px); */
-    width:75%;
-    max-width: 1200px;
+    width:85%;
+    max-width: 1500px;
     float:left;
 }
 #StatusGrid {
@@ -103,6 +118,21 @@ div.grid {
     margin-top: auto;
 }
 
+.occupancy-table{
+    width: 100%;
+}
+
+div.video-stream {
+    width: 300px;
+    /*height: 99%;*/
+    /*border: 1px solid #dee2e6;*/
+    resize: none;
+    /*overflow: hidden;*/
+    margin: auto;
+}
+div.video-stream canvas {
+    width: 300px;
+}
 /*-----------RPM ENTRY ELEMENTS-----------*/
 
 div.rpm-entry {
@@ -125,6 +155,18 @@ div.rpm-left {
 div.rpm-right {
     flex-direction: column;
     width:40%;
+    float:left;
+    height:100%;
+}
+div.lane-left {
+    flex-direction: column;
+    width:350px;
+    float:left;
+    height:100%;
+}
+
+div.lane-right {
+    flex-direction: column;
     float:left;
     height:100%;
 }
@@ -164,15 +206,15 @@ div.video-window {
 }
 
 div.video-window canvas {
-    width: 100%;
-    max-width: 500px;
-    max-height: 375px;
+    /*width: 100%;*/
+    /*max-width: 500px;*/
+    max-height: 300px;
 }
 
 div.video-window img {
-    width: 100%;
-    max-height: 375px;
-    max-width: 500px;
+    /*width: 100%;*/
+    max-height: 300px;
+    /*max-width: 500px;*/
 }
 
 

@@ -24,7 +24,7 @@ interface IRpmEntryProps {
 
 const RpmEntry = (props: IRpmEntryProps)=> {
 
-    let datasources: SosGetResult=[];
+    let datasources: SosGetResult[]=[];
 
     let [masterTimeController, setMasterTimeController] = useState<DataSynchronizer>({});
 

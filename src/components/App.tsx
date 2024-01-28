@@ -13,7 +13,7 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 
 // @ts-ignore
 import {appStore} from "../state/Store";
@@ -38,7 +38,7 @@ import {
     setAppInitialized
 } from "../state/Slice";
 import {useAppDispatch, useAppSelector} from "../state/Hooks";
-import {Alert, AlertTitle} from "@mui/material";
+import {Tab, TabsList, TabPanel, Tabs} from "@mui/base";
 import ServerManagement from "./servers/ServerManagement";
 import AddServer from "./servers/AddServer";
 import Observables from "./observables/Observables";
@@ -55,6 +55,13 @@ import {ObservableType} from "../data/Constants";
 //@ts-ignore
 import {Mode} from "osh-js/source/core/datasource/Mode";
 import OccupancyTable from "./oscas/OccupancyTable";
+import OccupancyView from "./oscas/OccupancyView";
+import SiteMap from "./oscas/SiteMap";
+import SiteTable from "./oscas/SiteTable";
+import SiteView from "./oscas/SiteView"
+import StatusAlarm from "./oscas/StatusAlarm";
+import LaneView from "./oscas/LaneView";
+import Heatmap from "./oscas/Heatmap";
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -164,7 +171,7 @@ const App = () => {
         }, 5000)
     }
 
-    let server = "localhost:8282/sensorhub/sos";
+    let server = "34.67.197.57:8484/sensorhub/sos";
     let fullStart = "2023-11-30T16:00:46.867Z";
     let fullEnd = "2023-11-30T16:01:10Z";
 
@@ -179,7 +186,7 @@ const App = () => {
     let gammaProperty = "http://www.opengis.net/def/gamma-scan";
     let neutronProperty = "http://www.opengis.net/def/neutron-scan";
     let videoProperty = "http://sensorml.com/ont/swe/property/VideoFrame";
-    let mode = Mode.REPLAY;
+    let mode = Mode.BATCH;
 
     let p1Start = "2023-11-30T17:47:03Z";
     let p1End = "2023-11-30T17:48:50Z";
@@ -193,6 +200,8 @@ const App = () => {
 
 
     document.body.style.overflow = "scroll";
+
+    let siteProps:any = [];
 
     let rpm1EntryProps:any = {
         datasource: {
@@ -211,8 +220,13 @@ const App = () => {
 
             }
         },
-        name: "Lane 1"
+        name: "RS Lane 1",
+        occupancy:{
+            start: p1Start,
+            end: p1End
+        }
     }
+    siteProps.push(rpm1EntryProps);
 
     let rpm2EntryProps:any = {
         datasource: {
@@ -231,8 +245,14 @@ const App = () => {
 
             }
         },
-        name: "Lane 2"
+        name: "RS Lane 2",
+        occupancy:{
+            start: p2Start,
+            end: p2End
+        }
     }
+
+    siteProps.push(rpm2EntryProps);
 
     let rpm3EntryProps:any = {
         datasource: {
@@ -251,11 +271,62 @@ const App = () => {
 
             }
         },
-        name: "Lane 3"
+        name: "RS Lane 3"
     }
 
+    siteProps.push(rpm3EntryProps);
+
+    let aspectRpmProps: any = {
+        datasource: {
+            url: "34.67.197.57:8383/sensorhub/sos",
+            mode: mode,
+            start: "2023-12-26T19:25:46Z",
+            end: "2023-12-26T19:27:00Z",
+            rpm: {
+                id: "urn:osh:sensor:aspect:sensor001",
+                gammaProp: gammaProperty,
+                neutronProp: neutronProperty
+            },
+            video:{
+                id: videoOfferingID,
+                property: videoProperty
+            }
+        },
+        name: "Aspect: Lane 1"
+    }
+
+    siteProps.push(aspectRpmProps);
+
+
     return (
+
+
         <div id={"container"}>
+            <Tabs style={{height: '100%'}}>
+                <TabsList>
+                    <Tab>Site View</Tab>
+                    <Tab>Occupancy View</Tab>
+                    <Tab>Lane View</Tab>
+                    <Tab>Heat Map</Tab>
+                </TabsList>
+                <TabPanel value={0} sx={{
+                    padding: '0',
+                }}>
+                    <SiteView sites={siteProps}/>
+                </TabPanel>
+                <TabPanel value={1}>
+                    <OccupancyView name={rpm1EntryProps.name} datasource={rpm1EntryProps.datasource} occupancy={rpm1EntryProps.occupancy}/>
+                </TabPanel>
+                <TabPanel value={2}>
+                    {/*<StatusAlarm name={"GAMMA"} datasource={rpm2EntryProps.datasource} observedProperty={gammaProperty}/>*/}
+                    {/*<StatusAlarm name={"NEUTRON"} datasource={rpm2EntryProps.datasource} observedProperty={neutronProperty}/>*/}
+                    <LaneView name={"Rapiscan: Lane 1"} datasource={rpm1EntryProps.datasource}/>
+
+                </TabPanel>
+                <TabPanel value={3}>
+                    <Heatmap/>
+                </TabPanel>
+            </Tabs>
             {/*<ContextMenu/>*/}
 
             {/*{showServerManagementDialog ? <ServerManagement title={"Servers"}/> : null}*/}
@@ -266,20 +337,25 @@ const App = () => {
 
             {/*{showSplashScreen ? <SplashScreen onEnded={() => setShowSplashScreen(false)}/> : null}*/}
 
-            <div id={"overview-section"}>
-                <div className={'grid'} id={"ov-left"}>
-                    <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
-                    <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
-                    <RpmStatus datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
-                </div>
-                <div id={"ov-right"}>
-                    <CesiumMap/>
-                </div>
-            </div>
-            <RpmEntry datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>
-            <RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>
-            <RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>
-            <OccupancyTable name={rpm1EntryProps.name} datasource={rpm1EntryProps.datasource}/>
+            {/*// <div id={"overview-section"}>*/}
+            {/*//     <div className={'grid'} id={"ov-left"}>*/}
+            {/*//         <RpmStatus datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>*/}
+            {/*//         <RpmStatus datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>*/}
+            {/*//         <RpmStatus datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>*/}
+            {/*//         <RpmStatus name={aspectRpmProps.name} datasource={aspectRpmProps.datasource}/>*/}
+            {/*//     </div>*/}
+            {/*//     <div id={"ov-right"}>*/}
+            {/*//         <SiteMap sites={siteProps}/>*/}
+            {/*//     </div>*/}
+            {/*// </div>*/}
+            {/*// <SiteTable sites={siteProps}/>*/}
+            {/*<OccupancyTable datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>*/}
+            {/*<RpmEntry datasource={rpm1EntryProps.datasource} name={rpm1EntryProps.name}/>*/}
+            {/*<RpmEntry datasource={rpm2EntryProps.datasource} name={rpm2EntryProps.name}/>*/}
+            {/*<RpmEntry datasource={rpm3EntryProps.datasource} name={rpm3EntryProps.name}/>*/}
+            {/*<RpmEntry name={aspectRpmProps.name} datasource={aspectRpmProps.datasource}/>*/}
+
+            {/*<OccupancyView name={rpm2EntryProps.name} datasource={rpm2EntryProps.datasource} occupancy={rpm2EntryProps.occupancy}/>*/}
 
 
 
@@ -304,7 +380,7 @@ const App = () => {
             {/*    : null*/}
             {/*}*/}
 
-        </div>
+         </div>
     );
 };
 
