@@ -3,11 +3,16 @@ import React, {useEffect, useState} from "react";
 //@ts-ignore
 import SosGetResult from "osh-js/source/core/datasource/sos/SosGetResult.datasource"
 //@ts-ignore
+import SweApi from "osh-js/source/core/datasource/sweapi/SweApi.datasource"
+//@ts-ignore
 import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer"
 //@ts-ignore
 import CesiumView from "osh-js/source/core/ui/view/map/CesiumView"
 //@ts-ignore
 import PointMarkerLayer from "osh-js/source/core/ui/layer/PointMarkerLayer"
+//@ts-ignore
+import PolylineLayer from "osh-js/source/core/ui/layer/PolylineLayer"
+
 import {findInObject} from "../../utils/Utils";
 import UGV from "../../assets/models/ugv.glb";
 import DRONE from "../../assets/models/drone.glb";
@@ -18,12 +23,16 @@ import {setMapView, updateContextMenuState} from "../../state/Slice";
 //@ts-ignore
 import {Mode} from "osh-js/source/core/datasource/Mode";
 import {hslToRgb} from "@mui/material";
+// @ts-ignore
+import {randomUUID} from "osh-js/source/core/utils/Utils";
+import * as d3 from "d3";
 
 
 let buildingTileset: any = null;
 let viewer: any = null;
 
 const Heatmap=()=>{
+
 
     // function hslToRgb(h, s, l) {
     //     let r, g, b;
@@ -55,24 +64,49 @@ const Heatmap=()=>{
             endpointUrl:'34.67.197.57:8181/sensorhub/sos',
             offeringID:'KROMEK_D5:D5M100103',
             observedProperty: "http://sensorml.com/ont/swe/property/KromekDetectorRadiometricsV1Report",
-            startTime: "2024-01-27T15:13:22.204Z",
+            startTime: "2024-01-27T15:13:25.845Z",
             endTime: "2024-01-27T15:26:33.994Z",
             mode: Mode.BATCH
-        })
+        });
+
+        let statusAPI: SweApi = new SweApi(`status-api`, {
+            protocol: 'ws',
+            endpointUrl: '34.67.197.57:8181/sensorhub/api',
+            // collection: `/datastreams/${datasource.datastreamID}/observations`,
+            resource: `/datastreams/1o6r3g5jc6pja/observations`,
+            startTime: "2024-01-27T15:13:25.845Z",
+            endTime: "2024-01-27T15:26:33.994Z",
+            tls: false,
+            responseFormat: "application/swe+json",
+            mode: Mode.REPLAY,
+        });
+
+        let reportAPI: SweApi = new SweApi(`status-api`, {
+            protocol: 'ws',
+            endpointUrl: '34.67.197.57:8181/sensorhub/api',
+            // collection: `/datastreams/${datasource.datastreamID}/observations`,
+            resource: `/datastreams/rmdm2ukabde6q/observations`,
+            startTime: "2024-01-27T15:13:25.845Z",
+            endTime: "2024-01-27T15:26:33.994Z",
+            tls: false,
+            responseFormat: "application/swe+json",
+            mode: Mode.REPLAY,
+        });
+
 
         let statusDS: SosGetResult = new SosGetResult('status',{
             endpointUrl:'34.67.197.57:8181/sensorhub/sos',
             offeringID:'KROMEK_D5:D5M100103',
             observedProperty: "http://sensorml.com/ont/swe/property/KromekSerialRadiometricStatusReport",
-            startTime: "2024-01-27T15:13:22.204Z",
+            startTime: "2024-01-27T15:13:25.845Z",
             endTime: "2024-01-27T15:26:33.994Z",
             mode: Mode.BATCH
-        })
+        });
 
         let pointmarker: PointMarkerLayer = new PointMarkerLayer({
             getLocation: {
                 // @ts-ignore
-                dataSourceIds: [statusDS.getId()],
+                dataSourceIds: [statusAPI.getId()],
                 handler: function (rec: any) {
                     return {
                         x: findInObject(rec, 'lon | x | longitude'),
@@ -83,54 +117,85 @@ const Heatmap=()=>{
             },
             icon: "../../icons/circle.svg",
             iconSize: [32, 32],
+            iconColor: 'white',
             getIconColor:{
                 //@ts-ignore
-                dataSourceIds:[reportDS.getId()],
+                dataSourceIds:[reportAPI.getId()],
                 handler: function (rec: any) {
                     let dose: number = findInObject(rec,'doseRate');
-                    dose = dose*100;
-                    if (dose >= 250){
-                        dose = 250;
-                        return 'rgb(134,0,225)'
-                    }
-                    else if (dose < 250 && dose >200){
-                        dose = 250;
-                        return 'rgb(225,0,206)'
-                    }
-                    else if (dose < 200 && dose >150){
-                        dose = 250;
-                        return 'rgb(225,0,0)'
-                    }
-                    else if (dose < 150 && dose >100){
-                        dose = 250;
-                        return 'rgb(255,169,39)'
-                    }
-                    else if (dose < 100 && dose >50){
-                        dose = 250;
-                        return 'rgb(218,225,0)'
-                    }
-                    else if (dose < 50 && dose >0){
-                        dose = 250;
-                        return 'rgb(0,225,45)'
-                    }
-                    else{
-                        return 'rgb(0,225,45)'
-                    }
+                    dose = dose*1000;
+                    //*** Color Option 1
+                    // if (dose >= 250){
+                    //     dose = 250;
+                    //     return 'rgb(134,0,225)'
+                    // }
+                    // else if (dose < 250 && dose >200){
+                    //     dose = 250;
+                    //     return 'rgb(225,0,206)'
+                    // }
+                    // else if (dose < 200 && dose >150){
+                    //     dose = 250;
+                    //     return 'rgb(225,0,0)'
+                    // }
+                    // else if (dose < 150 && dose >100){
+                    //     dose = 250;
+                    //     return 'rgb(255,169,39)'
+                    // }
+                    // else if (dose < 100 && dose >50){
+                    //     dose = 250;
+                    //     return 'rgb(218,225,0)'
+                    // }
+                    // else if (dose < 50 && dose >0){
+                    //     dose = 250;
+                    //     return 'rgb(0,225,45)'
+                    // }
+                    // else{
+                    //     return 'rgb(0,225,45)'
+                    // }
+
+                    //***** Color Option 2
+                    // if (dose>=250){
+                    //     dose=250
+                    // }
                     //     dose = (dose /250)*240;
                     //
                     // let rgbString: string = hslToRgb('hsl('+dose+',100,50)')
                     // return rgbString
+
+                    // Color Option 3
+
+                    if (dose>=250){
+                        dose = 250;
+                    }
+                    dose = (dose/250);
+                    let interpolate = d3.interpolateRgbBasis(["green", "yellow", "red", "purple"])(dose);
+                    return interpolate;
                 }
             },
             defaultToTerrainElevation: false,
-            zIndex: 1,
+            // zIndex: 1,
             getMarkerId:{
                 // @ts-ignore
-                dataSourceIds: [statusDS.getId()],
-                handler:function (){
-                    return Date.now().toString();
+                dataSourceIds: [statusAPI.getId()],
+                handler:function (rec:any){
+                    return randomUUID();
                 }
             }
+
+        })
+
+        let polyline: PolylineLayer = new PolylineLayer({
+            getLocation:{
+                // @ts-ignore
+                dataSourceIds: [statusAPI.getId()],
+                handler: function (rec: any) {
+                    return {
+                        x: findInObject(rec, 'lon | x | longitude'),
+                        y: findInObject(rec, 'lat | y | latitude'),
+                        z: findInObject(rec, 'alt | z | altitude'),
+                    }
+                }
+            },
 
         })
 
@@ -188,11 +253,22 @@ const Heatmap=()=>{
 
         // By default, load into a view of Washington Monument from above
         viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(-77.03512734712851, 38.88943991307860, 800),
+            destination: Cesium.Cartesian3.fromDegrees(-85.3094, 35.0458, 200000),
         });
 
-        reportDS.connect();
-        statusDS.connect();
+        //
+        // statusAPI.connect();
+        // reportAPI.connect();
+
+        let timeController = new DataSynchronizer({
+            replaySpeed:10,
+            dataSources: [statusAPI, reportAPI],
+            startTime: "2024-01-27T15:13:25.845Z",
+            endTime: "2024-01-27T15:26:33.994Z",
+
+        });
+
+        timeController.connect();
 
     }, []);
 
