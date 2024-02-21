@@ -172,8 +172,8 @@ const Heatmap=()=>{
                     return interpolate;
                 }
             },
-            defaultToTerrainElevation: false,
-            // zIndex: 1,
+            defaultToTerrainElevation: true,
+            zIndex: 1,
             getMarkerId:{
                 // @ts-ignore
                 dataSourceIds: [statusAPI.getId()],
