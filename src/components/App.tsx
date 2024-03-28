@@ -19,8 +19,6 @@ import React, {ReactElement, useEffect, useState} from "react";
 import {appStore} from "../state/Store";
 
 import CesiumMap from "./map/CesiumMap";
-import RpmEntry from "./oscas/RpmEntry"
-import RpmStatus from "./oscas/RpmStatus";
 import Settings from "./settings/Settings";
 import ContextMenu from "./menus/ContextMenu";
 import {
@@ -53,7 +51,13 @@ import TimeController from "./time/TimeController";
 import StreamingDialog from "./dialogs/StreamingDialog";
 import {ObservableType} from "../data/Constants";
 //@ts-ignore
+
 import {Mode} from "osh-js/source/core/datasource/Mode";
+import Zw100SensorReport from "./tstar/Zw100SensorReport";
+import WadwazSensorReport from "./tstar/WadwazSensorReport";
+import WapirzSensorReport from "./tstar/WapirzSensorReport";
+import SensorStatus from "./tstar/SensorStatus";
+
 import OccupancyTable from "./oscas/OccupancyTable";
 import OccupancyView from "./oscas/OccupancyView";
 import SiteMap from "./oscas/SiteMap";
@@ -61,7 +65,6 @@ import SiteTable from "./oscas/SiteTable";
 import SiteView from "./oscas/SiteView"
 import StatusAlarm from "./oscas/StatusAlarm";
 import LaneView from "./oscas/LaneView";
-import Heatmap from "./oscas/Heatmap";
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -171,162 +174,81 @@ const App = () => {
         }, 5000)
     }
 
-    let server = "34.67.197.57:8484/sensorhub/sos";
-    let fullStart = "2023-11-30T16:00:46.867Z";
-    let fullEnd = "2023-11-30T16:01:10Z";
+    let server = "localhost:8282/sensorhub/sos";
 
-    let testStart = "2023-11-01T15:03:13.515Z";
-    let testEnd = "2023-11-01T15:08:14.515Z";
+// Sensors
+    let zw100Sensor = "[urn:osh:sensor:zw100]sensor001";
+    let wadwazSensor = "[urn:osh:sensor:wadwaz1]sensor001";
+    let wapirzSensor = "[urn:osh:sensor:wapirz1]sensor001";
 
-// Full Database
-    let start = fullStart;
-    let end = fullEnd;
-    let offeringId = "urn:osh:sensor:rapiscansensor001";
-    let videoOfferingID = "urn:android:device:3260a03a280be236";
-    let gammaProperty = "http://www.opengis.net/def/gamma-scan";
-    let neutronProperty = "http://www.opengis.net/def/neutron-scan";
-    let videoProperty = "http://sensorml.com/ont/swe/property/VideoFrame";
-    let mode = Mode.BATCH;
+    let motionAlarmProperty = "http://sensorml.com/ont/swe/property/Motion";
+    let vibrationAlarmProperty = "http://sensorml.com/ont/swe/property/Alarm";
+    let temperatureProperty = "http://sensorml.com/ont/swe/property/Temperature";
+    let humidityProperty = "http://sensorml.com/ont/swe/property/RelHum";
+    let luminanceProperty = "http://sensorml.com/ont/swe/property/Luminance";
+    let UVProperty = "http://sensorml.com/ont/swe/property/UVI";
+    let batteryProperty = "http://sensorml.com/ont/swe/property/Battery";
+    let entryAlarmProperty = "http://sensorml.com/ont/swe/property/Entry"
+    let tamperAlarmProperty = "http://sensorml.com/ont/swe/property/Alarm";
 
-    let p1Start = "2023-11-30T17:47:03Z";
-    let p1End = "2023-11-30T17:48:50Z";
-    let p2Start = "2023-11-30T17:52:00Z";
-    let p2End = "2023-11-30T17:54:20Z";
-    let p3Start = "2023-11-30T17:56:01Z";
-    let p3End = "2023-11-30T17:57:45Z";
+    let mode = Mode.REAL_TIME;
 
+    let start = (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString());
+    let end = (new Date(Date.now()).toISOString());
 
-
-
+//     let start = "2024-03-27T21:44:35Z";
+//     let end = "2024-03-28T01:36:39.754Z";
 
     document.body.style.overflow = "scroll";
 
-    let siteProps:any = [];
+    let zWaveSensorProps:any = [];
 
-    let rpm1EntryProps:any = {
+    let sensorProps:any = {
         datasource: {
             url: server,
             mode: mode,
-            start: p1Start,
-            end: p1End,
-            rpm: {
-                id: offeringId,
-                gammaProp: gammaProperty,
-                neutronProp: neutronProperty
+            start: start,
+            end: end,
+            zw100Sensor: {
+                name: "ZW100",
+                id: zw100Sensor,
+                motionProp: motionAlarmProperty,
+                vibrationProp: vibrationAlarmProperty,
+                temperatureProp: temperatureProperty,
+                humidityProp: humidityProperty,
+                luminanceProp: luminanceProperty,
+                UVProp: UVProperty,
+                batteryProp: batteryProperty
             },
-            video: {
-                id: videoOfferingID,
-                property: videoProperty
-
-            }
+            wadwazSensor: {
+                name: "WADWAZ",
+                id: wadwazSensor,
+                entryAlarmProp: entryAlarmProperty,
+                tamperAlarmProp: tamperAlarmProperty,
+                batteryProp: batteryProperty
+            },
+            wapirzSensor: {
+                name: "WAPIRZ",
+                id: wapirzSensor,
+                motionProp: motionAlarmProperty,
+                tamperAlarmProp: tamperAlarmProperty,
+                temperatureProp: temperatureProperty,
+                batteryProp: batteryProperty
+            },
         },
-        name: "RS Lane 1",
-        occupancy:{
-            start: p1Start,
-            end: p1End
+        name: "OSH zWave"
         }
-    }
-    siteProps.push(rpm1EntryProps);
 
-    let rpm2EntryProps:any = {
-        datasource: {
-            url: server,
-            mode: mode,
-            start: p2Start,
-            end: p2End,
-            rpm: {
-                id: offeringId,
-                gammaProp: gammaProperty,
-                neutronProp: neutronProperty
-            },
-            video: {
-                id: videoOfferingID,
-                property: videoProperty
-
-            }
-        },
-        name: "RS Lane 2",
-        occupancy:{
-            start: p2Start,
-            end: p2End
-        }
-    }
-
-    siteProps.push(rpm2EntryProps);
-
-    let rpm3EntryProps:any = {
-        datasource: {
-            url: server,
-            mode: mode,
-            start: p3Start,
-            end: p3End,
-            rpm: {
-                id: offeringId,
-                gammaProp: gammaProperty,
-                neutronProp: neutronProperty
-            },
-            video: {
-                id: videoOfferingID,
-                property: videoProperty
-
-            }
-        },
-        name: "RS Lane 3"
-    }
-
-    siteProps.push(rpm3EntryProps);
-
-    let aspectRpmProps: any = {
-        datasource: {
-            url: "34.67.197.57:8383/sensorhub/sos",
-            mode: mode,
-            start: "2023-12-26T19:25:46Z",
-            end: "2023-12-26T19:27:00Z",
-            rpm: {
-                id: "urn:osh:sensor:aspect:sensor001",
-                gammaProp: gammaProperty,
-                neutronProp: neutronProperty
-            },
-            video:{
-                id: videoOfferingID,
-                property: videoProperty
-            }
-        },
-        name: "Aspect: Lane 1"
-    }
-
-    siteProps.push(aspectRpmProps);
-
+    zWaveSensorProps.push(sensorProps);
 
     return (
 
 
         <div id={"container"}>
-            <Tabs style={{height: '100%'}}>
-                <TabsList>
-                    <Tab>Site View</Tab>
-                    <Tab>Occupancy View</Tab>
-                    <Tab>Lane View</Tab>
-                    <Tab>Heat Map</Tab>
-                </TabsList>
-                <TabPanel value={0} sx={{
-                    padding: '0',
-                }}>
-                    <SiteView sites={siteProps}/>
-                </TabPanel>
-                <TabPanel value={1}>
-                    <OccupancyView name={rpm1EntryProps.name} datasource={rpm1EntryProps.datasource} occupancy={rpm1EntryProps.occupancy}/>
-                </TabPanel>
-                <TabPanel value={2}>
-                    {/*<StatusAlarm name={"GAMMA"} datasource={rpm2EntryProps.datasource} observedProperty={gammaProperty}/>*/}
-                    {/*<StatusAlarm name={"NEUTRON"} datasource={rpm2EntryProps.datasource} observedProperty={neutronProperty}/>*/}
-                    <LaneView name={"Rapiscan: Lane 1"} datasource={rpm1EntryProps.datasource}/>
+           <Zw100SensorReport name={sensorProps.name} datasource={sensorProps.datasource}/>
+           <WadwazSensorReport name={sensorProps.name} datasource={sensorProps.datasource}/>
+           <WapirzSensorReport name={sensorProps.name} datasource={sensorProps.datasource}/>
 
-                </TabPanel>
-                <TabPanel value={3}>
-                    <Heatmap/>
-                </TabPanel>
-            </Tabs>
             {/*<ContextMenu/>*/}
 
             {/*{showServerManagementDialog ? <ServerManagement title={"Servers"}/> : null}*/}
